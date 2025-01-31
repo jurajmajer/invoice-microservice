@@ -57,7 +57,7 @@ def get_invoice_number(invoice_prefix, db):
         raise
 
     if last_sequence_number is None:
-        raise Exception('last_sequence_number is None, cannot generate invoice number')
+        raise TypeError('last_sequence_number is None, cannot generate invoice number')
     return invoice_prefix + str(last_sequence_number).zfill(5)
 
 
