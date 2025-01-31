@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -8,6 +9,8 @@ from app.bl.renderer.html_renderer import render_html
 from app.bl.renderer.pdf_renderer import render_pdf
 from app.db.database import SessionLocal
 from app.db.models import InvoiceSequence
+
+log = logging.getLogger(__name__)
 
 
 def get_db():
@@ -21,13 +24,17 @@ def get_db():
 def create_invoice(template_id: str, template_params: object, lang: str, db: Session) -> CreateInvoiceResponse:
     today = datetime.today()
     invoice_prefix = 'Z' + str(today.year)
+    log.info('Creating invoice...')
     invoice_number = get_invoice_number(invoice_prefix, db)
     template_params = add_template_parms(template_params, invoice_number, today, lang)
     html_filename = render_html(template_id, template_params, lang, invoice_number)
+    log.info('html_filename = {0}'.format(html_filename))
     pdf_output_filename = get_pdf_output_filename(invoice_number + '.pdf', today)
-    render_pdf(html_filename, pdf_output_filename)
+    pdf_output_filepath = render_pdf(html_filename, pdf_output_filename)
+    log.info('pdf_output_filename = {0}'.format(pdf_output_filepath))
     ret_val = CreateInvoiceResponse()
     ret_val.invoice_file_name = pdf_output_filename
+    log.info('Invoice created')
     return ret_val
 
 
