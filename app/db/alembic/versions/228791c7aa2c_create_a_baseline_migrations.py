@@ -5,6 +5,8 @@ Revises:
 Create Date: 2025-01-31 10:34:42.162921
 
 """
+# pylint: skip-file
+
 from typing import Sequence, Union
 
 from alembic import op

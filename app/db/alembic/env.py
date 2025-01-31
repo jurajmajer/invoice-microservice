@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 import os
 from logging.config import fileConfig
 

@@ -3,11 +3,11 @@ import os
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_201_CREATED
+import yaml
 
 from app.api.controller import controller
 from app.api.controller.schemas import CreateInvoiceBody, CreateInvoiceResponse
-from starlette.status import HTTP_201_CREATED
-import yaml
 
 app = FastAPI(
     title='Invoice Microservice API',
@@ -19,9 +19,9 @@ app = FastAPI(
 )
 
 # Configure logging
-log_config_file = 'app/log_conf.yaml'
-if os.path.isfile(log_config_file):
-    with open(log_config_file, 'rt') as f:
+LOG_CONFIG_FILE = 'app/log_conf.yaml'
+if os.path.isfile(LOG_CONFIG_FILE):
+    with open(LOG_CONFIG_FILE, 'rt', encoding='utf-8') as f:
         config = yaml.safe_load(f.read())
         logging.config.dictConfig(config)
 logger = logging.getLogger(__name__)

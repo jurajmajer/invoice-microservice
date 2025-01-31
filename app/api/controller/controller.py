@@ -21,17 +21,18 @@ def get_db():
         db.close()
 
 
-def create_invoice(template_id: str, template_params: object, lang: str, db: Session) -> CreateInvoiceResponse:
+def create_invoice(template_id: str, template_params: object, lang: str, db: Session)\
+        -> CreateInvoiceResponse:
     today = datetime.today()
     invoice_prefix = 'Z' + str(today.year)
     log.info('Creating invoice...')
     invoice_number = get_invoice_number(invoice_prefix, db)
     template_params = add_template_parms(template_params, invoice_number, today, lang)
     html_filename = render_html(template_id, template_params, lang, invoice_number)
-    log.info('html_filename = {0}'.format(html_filename))
+    log.info('html_filename = %s', html_filename)
     pdf_output_filename = get_pdf_output_filename(invoice_number + '.pdf', today)
     pdf_output_filepath = render_pdf(html_filename, pdf_output_filename)
-    log.info('pdf_output_filename = {0}'.format(pdf_output_filepath))
+    log.info('pdf_output_filename = %s', pdf_output_filepath)
     ret_val = CreateInvoiceResponse()
     ret_val.invoice_file_name = pdf_output_filename
     log.info('Invoice created')
@@ -40,8 +41,8 @@ def create_invoice(template_id: str, template_params: object, lang: str, db: Ses
 
 def get_invoice_number(invoice_prefix, db):
     try:
-        db_row = db.query(InvoiceSequence).filter(InvoiceSequence.invoice_prefix == invoice_prefix).\
-            with_for_update().first()
+        db_row = db.query(InvoiceSequence).filter(InvoiceSequence.invoice_prefix
+                                                  == invoice_prefix).with_for_update().first()
         if db_row is None:
             db_row = InvoiceSequence()
             db_row.invoice_prefix = invoice_prefix
@@ -51,7 +52,7 @@ def get_invoice_number(invoice_prefix, db):
             db_row.last_sequence_number = db_row.last_sequence_number + 1
         last_sequence_number = db_row.last_sequence_number
         db.commit()
-    except Exception as exc:
+    except Exception:
         db.rollback()
         raise
 
@@ -76,11 +77,11 @@ def format_current_date(today):
 def get_form_of_payment(lang):
     if lang == 'sk':
         return 'Platobná brána'
-    elif lang == 'cs':
+    if lang == 'cs':
         return 'Platební brána'
-    elif lang == 'pl':
+    if lang == 'pl':
         return 'Bramka płatności'
-    elif lang == 'de':
+    if lang == 'de':
         return 'Zahlungsgateway'
     return 'Payment gateway'
 
