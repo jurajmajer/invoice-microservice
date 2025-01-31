@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 import uvicorn
 
 from app.api.main import app
