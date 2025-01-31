@@ -10,7 +10,6 @@ from app.bl.renderer.pdf_renderer import render_pdf
 def create_invoice(template_id: str, template_params: object, lang: str) -> CreateInvoiceResponse:
     invoice_number = get_invoice_number()
     today = datetime.today()
-    template_params = template_params | load_static_template_params()
     template_params = add_template_parms(template_params, invoice_number, today, lang)
     html_filename = render_html(template_id, template_params, lang, invoice_number)
     pdf_output_filename = get_pdf_output_filename(invoice_number + '.pdf', today)
@@ -18,14 +17,6 @@ def create_invoice(template_id: str, template_params: object, lang: str) -> Crea
     ret_val = CreateInvoiceResponse()
     ret_val.invoice_file_name = pdf_output_filename
     return ret_val
-
-
-def load_static_template_params():
-    static_template_params_filename = 'template_params.json'
-    if not os.path.isfile(static_template_params_filename):
-        return {}
-    with open(static_template_params_filename, encoding='utf-8') as static_template_params_file:
-        return json.load(static_template_params_file)
 
 
 def get_invoice_number():
