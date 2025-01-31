@@ -14,10 +14,12 @@ output_folder = util.read_env_var('OUTPUT_FOLDER')
 
 def render_html(template_id, template_params, lang, output_filename):
     template_folder = get_template_folder(template_id, lang)
+    template_file = os.path.join(template_folder, 'html.jinja2')
+    if not os.path.isfile(template_file) and os.getenv('DEFAULT_LANG') is not None:
+        template_folder = get_template_folder(template_id, os.getenv('DEFAULT_LANG'))
+        template_file = os.path.join(template_folder, 'html.jinja2')
     template_params = template_params | load_static_template_params(template_folder)
-    html_content = render_template(os.path.join(template_folder, 'html.jinja2'),
-                                   template_params)
-
+    html_content = render_template(template_file, template_params)
     output_filepath = get_html_output_filename(output_filename)
     Path(os.path.dirname(output_filepath)).mkdir(parents=True, exist_ok=True)
     with open(output_filepath, 'w', encoding='utf-8') as f:
