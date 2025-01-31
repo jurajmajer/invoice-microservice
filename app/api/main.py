@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
 
 from app.api.controller import controller
 from app.api.controller.schemas import CreateInvoiceBody, CreateInvoiceResponse
@@ -21,5 +22,6 @@ app = FastAPI(
           tags=['Invoice'])
 def create_invoice(
         body: CreateInvoiceBody,
+        db: Session = Depends(controller.get_db),
 ) -> CreateInvoiceResponse:
-    return controller.create_invoice(body.template_id, body.template_params, body.lang)
+    return controller.create_invoice(body.template_id, body.template_params, body.lang, db)
