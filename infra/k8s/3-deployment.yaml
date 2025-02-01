@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoice-microservice-service
+  namespace: invoice-microservice
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: invoice-microservice-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoice-microservice-deployment
+  namespace: invoice-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoice-microservice-service
+  template:
+    metadata:
+      labels:
+        app: invoice-microservice-service
+    spec:
+      containers:
+        - name: invoice-microservice-container
+          image: ghcr.io/jurajmajer/invoice-microservice/invoice-microservice:0.01
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TEMPLATE_ROOT
+              value: '/app-data/template'
+            - name: OUTPUT_FOLDER
+              value: '/app-data/output'
+            - name: DEFAULT_LANG
+              value: 'en'
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: db-uri
+                  key: password
+          volumeMounts:
+            - name: persistent-storage
+              mountPath: /app-data
+      volumes:
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: pv-claim
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0

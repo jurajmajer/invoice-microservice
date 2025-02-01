@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: invoice-microservice
+  labels:
+    name: invoice-microservice
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-uri
+  namespace: invoice-microservice
+type: kubernetes.io/basic-auth
+stringData:
+  password: <define-this>
