@@ -10,4 +10,4 @@ COPY ./app /code/app
 COPY ./app/log_conf.k8s.yaml /code/app/log_conf.yaml
 
 ENV PYTHONPATH=/code/app
-CMD ["gunicorn", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8080", "--access-logfile", "/app-data/log/access.log", "--error-logfile", "/app-data/log/error.log", "app.api.main:app"]
+CMD ["gunicorn", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8080", "--access-logfile", "/app-data/invoice/log/access.log", "--error-logfile", "/app-data/invoice/log/error.log", "app.api.main:app"]
