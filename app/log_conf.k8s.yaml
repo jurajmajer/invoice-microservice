@@ -11,12 +11,12 @@ handlers:
   default:
     formatter: default
     class: logging.FileHandler
-    filename: /app-data/log/invoice-microservice.log
+    filename: /app-data/invoice/log/invoice-microservice.log
     mode: a
   access:
     formatter: access
     class: logging.FileHandler
-    filename: /app-data/log/invoice-microservice.log
+    filename: /app-data/invoice/log/invoice-microservice.log
     mode: a
 loggers:
   uvicorn.error:
