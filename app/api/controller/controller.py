@@ -79,10 +79,6 @@ def get_form_of_payment(lang):
         return 'Platobná brána'
     if lang == 'cs':
         return 'Platební brána'
-    if lang == 'pl':
-        return 'Bramka płatności'
-    if lang == 'de':
-        return 'Zahlungsgateway'
     return 'Payment gateway'
 
 
