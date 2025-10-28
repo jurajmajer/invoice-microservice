@@ -63,10 +63,14 @@ def get_invoice_number(invoice_prefix, db):
 
 def add_template_parms(template_params, invoice_number, today, lang):
     template_params['invoice']['number'] = invoice_number
-    template_params['invoice']['dateOfCreation'] = format_current_date(today)
-    template_params['invoice']['dateOfDelivery'] = format_current_date(today)
-    template_params['invoice']['dueDate'] = format_current_date(today)
-    template_params['invoice']['formOfPayment'] = get_form_of_payment(lang)
+    if 'dateOfCreation' not in template_params['invoice']:
+        template_params['invoice']['dateOfCreation'] = format_current_date(today)
+    if 'dateOfDelivery' not in template_params['invoice']:
+        template_params['invoice']['dateOfDelivery'] = format_current_date(today)
+    if 'dueDate' not in template_params['invoice']:
+        template_params['invoice']['dueDate'] = format_current_date(today)
+    if 'formOfPayment' not in template_params['invoice']:
+        template_params['invoice']['formOfPayment'] = get_form_of_payment(lang)
     return template_params
 
 
