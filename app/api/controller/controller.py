@@ -24,13 +24,14 @@ def get_db():
 def create_invoice(template_id: str, template_params: object, lang: str, db: Session)\
         -> CreateInvoiceResponse:
     today = datetime.today()
-    invoice_prefix = 'Z' + str(today.year)
+    year = get_year(template_params, today)
+    invoice_prefix = 'Z' + str(year)
     log.info('Creating invoice...')
     invoice_number = get_invoice_number(invoice_prefix, db)
     template_params = add_template_parms(template_params, invoice_number, today, lang)
     html_filename = render_html(template_id, template_params, lang, invoice_number)
     log.info('html_filename = %s', html_filename)
-    pdf_output_filename = get_pdf_output_filename(invoice_number + '.pdf', today)
+    pdf_output_filename = get_pdf_output_filename(invoice_number + '.pdf', year)
     pdf_output_filepath = render_pdf(html_filename, pdf_output_filename)
     log.info('pdf_output_filename = %s', pdf_output_filepath)
     ret_val = CreateInvoiceResponse()
@@ -78,6 +79,12 @@ def format_current_date(today):
     return today.strftime('%d. %b %Y')
 
 
+def get_year(template_params: object, today):
+    if 'dateOfCreation' in template_params['invoice']:
+        return datetime.strptime(template_params['invoice']['dateOfCreation'], "%d. %b %Y").year
+    return today.year
+
+
 def get_form_of_payment(lang):
     if lang == 'sk':
         return 'Platobná brána'
@@ -86,5 +93,5 @@ def get_form_of_payment(lang):
     return 'Payment gateway'
 
 
-def get_pdf_output_filename(output_filename, today):
-    return os.path.join(str(today.year), output_filename)
+def get_pdf_output_filename(output_filename, year):
+    return os.path.join(str(year), output_filename)
