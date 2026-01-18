@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: invoice-microservice-container
-          image: ghcr.io/jurajmajer/invoice-microservice/invoice-microservice:0.03
+          image: ghcr.io/jurajmajer/invoice-microservice/invoice-microservice:0.04
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
